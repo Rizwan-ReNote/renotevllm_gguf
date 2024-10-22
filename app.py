@@ -16,7 +16,7 @@ async def ask_image(
         image_data = file.file.read()
 
         res = ollama.chat(
-            model="hf.co/openbmb/MiniCPM-V-2_6-gguf:ggml-model-IQ3_M",
+            model="hf.co/openbmb/MiniCPM-V-2_6-gguf:ggml-model-IQ4_NL.gguf",
             messages=[
                 {
                     'role': 'user',
