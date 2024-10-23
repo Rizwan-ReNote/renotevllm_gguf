@@ -13,7 +13,15 @@ async def ask_image(
 
     try:
 
-        image_data = file.file.read()
+        image_data = None
+        
+        if file:
+            image_data = file.file.read()
+            
+        messages = [{'role': 'user', 'content': question}]
+        
+        if image_data:
+            messages[0]['images'] = [image_data]    
 
         res = ollama.chat(
             model="aiden_lu/minicpm-v2.6:Q4_K_M",
