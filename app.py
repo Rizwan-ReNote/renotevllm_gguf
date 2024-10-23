@@ -7,7 +7,7 @@ app = FastAPI()
 
 @app.post("/ask-image/")
 async def ask_image(
-    file: UploadFile = File(...),
+    file: UploadFile = File(None),  
     question: str = Form(...)
 ):
 
