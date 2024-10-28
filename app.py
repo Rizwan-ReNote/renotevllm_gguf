@@ -1,34 +1,36 @@
-from typing import Optional
 import ollama
 from fastapi import FastAPI, File, Form, UploadFile
 from fastapi.responses import JSONResponse
 
 app = FastAPI()
 
+
 @app.post("/ask-image/")
 async def ask_image(
-    file: Optional[UploadFile] = File(None),
-    question: str = Form(...)
+    file: UploadFile = File(None),
+    question: str = Form(...),
 ):
+
     try:
-        
-        image_data = None
-
-        
         if file:
-            image_data = await file.read()
+            image_data = file.file.read()
+        else:
+            image_data = None
 
-        
-        messages = [{'role': 'user', 'content': question}]
-
-        
-        if image_data:
-            messages[0]['images'] = [image_data]
-
-        
         res = ollama.chat(
             model="aiden_lu/minicpm-v2.6:Q4_K_M",
-            messages=messages
+            messages=[
+                {
+                    'role': 'user',
+                    'content': question,
+                    'images': [image_data] if image_data else None
+                }
+            ],
+             temperature=0.1,
+             top_p=0.9,           # Adjusts the diversity of the model's responses.
+             max_tokens=150,      # Limits the length of the generated output.
+             presence_penalty=0.6, # Encourages variety in the content.
+             frequency_penalty=0.5 # Reduces repetition in the output.
         )
 
         return JSONResponse(content={"response": res['message']['content']})
