@@ -4,36 +4,36 @@ from fastapi.responses import JSONResponse
 
 app = FastAPI()
 
+Prompt = '''Please analyze the provided image and extract all text as it appears, including Arabic script, any other languages, and symbols. Pay close attention to the Arabic text, ensuring that all details such as diacritics, ligatures, and the connected nature of Arabic letters are captured. Return the text exactly as it is written in the image, without translation, interpretation, or any additional information.'''
 
-@app.post("/ask-image/")
+@app.post("/Ar_OCR/")
 async def ask_image(
-    file: UploadFile = File(None),
-    question: str = Form(...),
+    file: UploadFile = File(...)
+    # question: str = Form(Prompt),
 ):
 
     try:
-        if file:
-            image_data = file.file.read()
-        else:
-            image_data = None
-            
-            
+        # Read the image data
+        image_data = file.file.read()
 
+        # Perform OCR using the specified question prompt
         res = ollama.chat(
-            model="doreilly/minicpm26_q5_k_m:latest",
+            model="minicpm-v:latest",
             messages=[
                 {
                     'role': 'user',
-                    'content': question,
-                    'images': [image_data] if image_data else None
+                    'content': Prompt,
+                    'images': [image_data]
                 }
             ]
         )
 
-        return JSONResponse(content={"response": res['message']['content']})
+        return JSONResponse(content={"text": res['message']['content']})
 
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)
+
+
 
 # import os
 # import ollama
