@@ -44,6 +44,7 @@ import os
 import ollama
 from fastapi import FastAPI, File, Form, UploadFile
 from fastapi.responses import JSONResponse
+import uvicorn
 
 # Step 1: Set environment variables if the ollama API supports them (Optional)
 os.environ["OLLAMA_TEMPERATURE"] = "0.1"
@@ -64,7 +65,6 @@ async def ask_image(
         image_data = file.file.read() if file else None
 
         # Step 2: Attempt to use model configuration if available
-        # Some APIs might allow configuring the model at load time
         model_name = "doreilly/minicpm26_q5_k_m"
         model_config = {
             "temperature": 0.1,
@@ -91,7 +91,6 @@ async def ask_image(
                     'images': [image_data] if image_data else None
                 }
             ]
-            # Avoid adding unsupported parameters here
         )
 
         # Extract response content from the result
@@ -100,3 +99,7 @@ async def ask_image(
     except Exception as e:
         # Return an error response if anything fails
         return JSONResponse(content={"error": str(e)}, status_code=500)
+
+# Make sure to run the FastAPI app on port 5000
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=5555)
