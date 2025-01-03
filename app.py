@@ -65,7 +65,7 @@ async def ask_image(
 
         # Step 2: Attempt to use model configuration if available
         # Some APIs might allow configuring the model at load time
-        model_name = "aiden_lu/minicpm-v2.6:Q4_K_M"
+        model_name = "doreilly/minicpm26_q5_k_m"
         model_config = {
             "temperature": 0.1,
             "top_p": 0.9,
